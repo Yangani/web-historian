@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var fileData;
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,12 +27,30 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
+  fs.readFile("sites", function(err, data) {
+      if(err) throw err;
+      console.log("readFile: " + data);
+      fileData = data;
+    })
 };
 
 exports.isUrlInList = function(){
+  var reqUrl = "/" + req.url + "/"
+  var fileSearch = fileData.match(reqUrl);
+  if(!!fileSearch) {
+    return true;
+  }
+  else {
+    return false;
+  }
 };
 
+
+
 exports.addUrlToList = function(){
+  if(x === false) {
+    fs.writeFile('paths.list', req.url)
+  }
 };
 
 exports.isUrlArchived = function(){
