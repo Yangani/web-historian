@@ -2,7 +2,10 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var fileData;
+var requireHandler = require('../web/request-handler.js')
 
+var beee = requireHandler.bee;
+console.log("MY Bee: ", beee)
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -13,7 +16,7 @@ var fileData;
 exports.paths = {
   siteAssets: path.join(__dirname, '../web/public'),
   archivedSites: path.join(__dirname, '../archives/sites'),
-  list: path.join(__dirname, '../archives/sites.txt'),
+  list: path.join(__dirname, '../web/archives/sites.txt'),
 };
 
 // Used for stubbing paths for tests, do not modify
@@ -27,31 +30,43 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
-  fs.readFile(paths.list, function(err, data) {
+  fs.readFile(exports.paths.list, 'utf8', function(err, data) {
       if(err) {
         throw err;
        }
       else {
-        fileData = data.split(" ");
+        console.log("Read File: ", data);
+        fileData = data;
       }
     })
-};
+}();
 
-exports.isUrlInList = function(url){
-  readListofUrls();
+exports.isUrlInList = function(reqUrl){
+  console.log("here", requireHandler.webAddress);
+  //exports.readListofUrls();
   //call readlistofurls, take url param, have readlist return an array of , have readlist make an array from the string it returns
-  var url = "/" + req.url + "/"
-  var fileSearch = fileData.match(url);
-  if(!!fileSearch) {
-    return true;
+  // var webAddress = "/" + req.url + "/"
+  // console.log("Url:" , url)
+  for(var i =0; i<fileData.length; i++) {
+    if(requireHandler.reqUrl === fileData[i]) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
-  else {
-    return false;
-  }
-};
+}
+//   var fileSearch = fileData.match(webAddress);
+//   if(!!fileSearch) {
+//     return true;
+//   }
+//   else {
+//     return false;
+//   }
+// };
 
 exports.addUrlToList = function(){
-  if (isUrlInList() === false) {
+  if (exports.isUrlInList() === false) {
     fs.writeFile('paths.list', req.url)
   }
 };
