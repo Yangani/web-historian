@@ -13,7 +13,7 @@ var fileData;
 exports.paths = {
   siteAssets: path.join(__dirname, '../web/public'),
   archivedSites: path.join(__dirname, '../archives/sites'),
-  list: path.join(__dirname, '../archives/sites.txt')
+  list: path.join(__dirname, '../archives/sites.txt'),
 };
 
 // Used for stubbing paths for tests, do not modify
@@ -27,16 +27,21 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
-  fs.readFile("sites", function(err, data) {
-      if(err) throw err;
-      console.log("readFile: " + data);
-      fileData = data;
+  fs.readFile(paths.list, function(err, data) {
+      if(err) {
+        throw err;
+       }
+      else {
+        fileData = data.split(" ");
+      }
     })
 };
 
-exports.isUrlInList = function(){
-  var reqUrl = "/" + req.url + "/"
-  var fileSearch = fileData.match(reqUrl);
+exports.isUrlInList = function(url){
+  readListofUrls();
+  //call readlistofurls, take url param, have readlist return an array of , have readlist make an array from the string it returns
+  var url = "/" + req.url + "/"
+  var fileSearch = fileData.match(url);
   if(!!fileSearch) {
     return true;
   }
@@ -45,16 +50,34 @@ exports.isUrlInList = function(){
   }
 };
 
-
-
 exports.addUrlToList = function(){
-  if(x === false) {
+  if (isUrlInList() === false) {
     fs.writeFile('paths.list', req.url)
   }
 };
 
-exports.isUrlArchived = function(){
+exports.isUrlArchived = function(url){
+  var url = "/" + req.url + "/"
+  fs.readdir(paths.archivedSites, function(err, files) {
+    if(err) throw err;
+    else {
+      for(var i=0; i<files.length; i++) {
+        if(url === files[i]) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+    }
+  })
 };
 
 exports.downloadUrls = function(){
+    if(isUrlArchived() === false) {
+      fs.writeFile(url, function(err) {
+        if(err) throw err;
+        console.log('created!')
+      })
+    }
 };

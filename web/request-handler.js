@@ -35,9 +35,27 @@ exports.handleRequest = function (req, res) {
        })
      }
   }
-  else {
-    console.log('here');
-    res.end()
+  else if (req.method === 'POST') {
+    var body = '';
+    var webAddress;
+    req.on("data", function(data) {
+       body += data;
+     });
+     req.on('end', function() {
+       webAddress = body.slice(4);
+     });
+     if (archive.isUrlInList(webAddress) === true){
+       fs.readFile(path.join(archive.paths.siteAssets, '/loading.html'), function(err, data) {
+            if(err) {
+              throw err;
+            }
+            else {
+              res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length':data.length});
+              // res.write(data);
+              res.end(data);
+            }
+       })
+    }
   }
   // if (req.method === 'OPTIONS') {
   //   response.end();
